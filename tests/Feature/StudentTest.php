@@ -6,10 +6,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Database\Factories\StudentFactory;
+use Database\Factories\UserFactory;
+use App\Models\User;
 
 class StudentTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -22,9 +24,11 @@ class StudentTest extends TestCase
         // A = Arrange
         StudentFactory::new()->count(5)->create();
 
+        $user = User::factory()->create(); // Using for Auth
+
 
         // A = Act
-        $response = $this->get(route('student_list'));
+        $response = $this->actingAs($user)->get(route('student_list'));
         // $response = $this->json('get', route('student_list'));
 
 
@@ -42,9 +46,10 @@ class StudentTest extends TestCase
     // Student Create Test Function
     public function test_student_create()
     {
+        $user = User::factory()->create(); // Using for Auth
 
         // A = Act
-        $response = $this->json('get', route('student_create'));
+        $response = $this->actingAs($user)->get(route('student_create'));
 
         // A = Assert
         $response->assertStatus(200)->assertSeeText("");
@@ -53,6 +58,8 @@ class StudentTest extends TestCase
     // Student Data Store
     public function test_student_store()
     {
+
+        $user = User::factory()->create(); // Using for Auth
 
         // Arrange
         $data = [
@@ -65,7 +72,7 @@ class StudentTest extends TestCase
 
         // Act
         $this->withoutExceptionHandling(); // Validator Data error show message (302)
-        $response = $this->post(route('student.store', $data));
+        $response = $this->actingAs($user)->post(route('student.store', $data));
 
         // A = Assert
         $response->assertStatus(200);
@@ -76,12 +83,14 @@ class StudentTest extends TestCase
     public function test_student_edit()
     {
 
+        $user = User::factory()->create(); // Using for Auth
+
         // Arrange
         $data = StudentFactory::new()->create(); //Darta create korba
 
         // Act
         $this->withoutExceptionHandling(); // Validator Data error show message (302)
-        $response = $this->get(route('student.edit', ['id' => $data->id]));
+        $response = $this->actingAs($user)->get(route('student.edit', ['id' => $data->id]));
 
         // Assert
         $response->assertStatus(200)
@@ -98,6 +107,7 @@ class StudentTest extends TestCase
     {
 
 
+        $user = User::factory()->create(); // Using for Auth
         // Arrange
         $data = StudentFactory::new()->create(); //Darta create korba
         $update = [
@@ -109,7 +119,7 @@ class StudentTest extends TestCase
 
         // Act
         $this->withoutExceptionHandling(); // Error View Function
-        $response = $this->put(route('student.update', ['id' => $data->id]), $update);
+        $response = $this->actingAs($user)->put(route('student.update', ['id' => $data->id]), $update);
 
         // Assert
         $response->assertStatus(200);
@@ -122,11 +132,12 @@ class StudentTest extends TestCase
     public function test_student_delete()
     {
 
+        $user = User::factory()->create(); // Using for Auth
         // Arrange
         $data = StudentFactory::new()->create();
 
         // Act
-        $response = $this->delete(route('student.delete', ['id' => $data->id]));
+        $response = $this->actingAs($user)->delete(route('student.delete', ['id' => $data->id]));
 
         // Assert
         $response->assertStatus(200);

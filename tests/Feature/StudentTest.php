@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Database\Factories\StudentFactory;
 use Database\Factories\UserFactory;
 use App\Models\User;
+use App\Models\Student;
 
 class StudentTest extends TestCase
 {
@@ -144,4 +145,15 @@ class StudentTest extends TestCase
         $this->assertDatabaseMissing('students', ['id' => $data->id]); // Missing =  Missing Data
 
     }
+
+    /// Student Api Test Function Start ///
+
+    // public function test_api_student_list()
+    // {
+    //     $Student = Student::factory()->create();
+
+    //     $response = $this->getJson(url: '/api/student-list');
+
+    //     $response->assertJson([$Student->toArray()]);
+    // }
 }
